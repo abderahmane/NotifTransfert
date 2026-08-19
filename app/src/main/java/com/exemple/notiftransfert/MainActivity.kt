@@ -49,3 +49,4 @@ class MainActivity : AppCompatActivity() {
         tv.text = if (sb.isEmpty()) "Aucune transaction capturée pour le moment." else sb.toString()
     }
 }
+

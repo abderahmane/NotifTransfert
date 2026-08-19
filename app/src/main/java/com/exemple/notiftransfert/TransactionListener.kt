@@ -9,18 +9,21 @@ import android.util.Log
 class TransactionListener : NotificationListenerService() {
 
     data class Transaction(
+        val type: String,
         val montant: String,
         val devise: String,
         val nomExpediteur: String,
         val numeroExpediteur: String,
-        val reference: String,
         val date: Long = System.currentTimeMillis()
     )
 
+    companion object {
+        // Package officiel de l'app Sedad (Banque Mauritanienne de l'Investissement)
+        const val PACKAGE_SEDAD = "mr.digi.sedad"
+    }
+
     override fun onNotificationPosted(sbn: StatusBarNotification) {
-        // Une fois que vous connaissez le vrai packageName de l'app de transfert,
-        // decommentez la ligne suivante et remplacez la valeur pour filtrer.
-        // if (sbn.packageName != "com.exemple.appdetransfert") return
+        if (sbn.packageName != PACKAGE_SEDAD) return
 
         val extras = sbn.notification.extras
         val title = extras.getString(Notification.EXTRA_TITLE) ?: ""
@@ -30,27 +33,26 @@ class TransactionListener : NotificationListenerService() {
         Log.d("TransactionListener", "Package: ${sbn.packageName}")
         Log.d("TransactionListener", "Titre: $title | Texte: $bigText")
 
-        if (title.contains("Transfert d'argent", ignoreCase = true)) {
-            extraireTransaction(bigText)
-        }
+        extraireTransaction(title, bigText)
     }
 
-    private fun extraireTransaction(texte: String): Transaction? {
-        val montantRegex = Regex("Montant\\s*:\\s*(\\d+)\\s*(\\w+)")
-        val montantMatch = montantRegex.find(texte) ?: return null
-
-        val expediteurRegex = Regex("Expediteur\\s*:\\s*([A-Za-zÀ-ÿ\\s'-]+),(\\d+)")
-        val expediteurMatch = expediteurRegex.find(texte) ?: return null
-
-        val referenceRegex = Regex("\\b(\\d{15,20})\\b")
-        val referenceMatch = referenceRegex.find(texte)
+    private fun extraireTransaction(titre: String, texte: String): Transaction? {
+        // Format observé: "Vous avez reçu 5.0 MRU de Abderrahmane ( 46536376 )"
+        val regex = Regex(
+            "re[cç]u\\s*([\\d.,]+)\\s*(\\w+)\\s*de\\s*([A-Za-zÀ-ÿ\\s]+?)\\s*\\(\\s*(\\d+)\\s*\\)",
+            RegexOption.IGNORE_CASE
+        )
+        val match = regex.find(texte) ?: run {
+            Log.d("TransactionListener", "Format non reconnu, ignoré: $texte")
+            return null
+        }
 
         val transaction = Transaction(
-            montant = montantMatch.groupValues[1],
-            devise = montantMatch.groupValues[2],
-            nomExpediteur = expediteurMatch.groupValues[1].trim(),
-            numeroExpediteur = expediteurMatch.groupValues[2],
-            reference = referenceMatch?.groupValues?.get(1) ?: ""
+            type = titre.trim(),
+            montant = match.groupValues[1],
+            devise = match.groupValues[2],
+            nomExpediteur = match.groupValues[3].trim(),
+            numeroExpediteur = match.groupValues[4]
         )
 
         Log.d("TransactionListener", "Transaction capturée: $transaction")
@@ -62,11 +64,11 @@ class TransactionListener : NotificationListenerService() {
         val prefs = getSharedPreferences("transactions", Context.MODE_PRIVATE)
         val id = t.date.toString()
         prefs.edit()
+            .putString("$id.type", t.type)
             .putString("$id.montant", t.montant)
             .putString("$id.devise", t.devise)
             .putString("$id.expediteur", t.nomExpediteur)
             .putString("$id.numero", t.numeroExpediteur)
-            .putString("$id.reference", t.reference)
             .apply()
     }
 }
