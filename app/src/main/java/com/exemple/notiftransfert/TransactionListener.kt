@@ -106,7 +106,7 @@ class TransactionListener : NotificationListenerService() {
     private fun traiterTransaction(t: Transaction) {
         Log.d("TransactionListener", "Transaction capturée: $t")
         sauvegarderTransaction(t)
-        SheetSync.envoyer(t)
+        SheetSync.envoyer(applicationContext, t)
     }
 
     private fun sauvegarderTransaction(t: Transaction) {

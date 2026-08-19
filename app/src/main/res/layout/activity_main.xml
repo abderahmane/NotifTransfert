@@ -11,6 +11,16 @@
         android:layout_height="wrap_content"
         android:text="Activer l'accès aux notifications" />
 
+    <TextView
+        android:id="@+id/tvStatutSheet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:padding="12dp"
+        android:background="#EEEEEE"
+        android:textSize="13sp"
+        android:text="Google Sheets — dernier envoi :" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"

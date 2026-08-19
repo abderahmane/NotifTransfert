@@ -15,18 +15,25 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val btnActiver = findViewById<Button>(R.id.btnActiver)
+        val tvStatutSheet = findViewById<TextView>(R.id.tvStatutSheet)
         val tvListe = findViewById<TextView>(R.id.tvListe)
 
         btnActiver.setOnClickListener {
             startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
         }
 
+        afficherStatutSheet(tvStatutSheet)
         afficherTransactions(tvListe)
     }
 
     override fun onResume() {
         super.onResume()
+        afficherStatutSheet(findViewById(R.id.tvStatutSheet))
         afficherTransactions(findViewById(R.id.tvListe))
+    }
+
+    private fun afficherStatutSheet(tv: TextView) {
+        tv.text = "Google Sheets — dernier envoi :\n${SheetSync.lireDernierStatut(this)}"
     }
 
     private fun afficherTransactions(tv: TextView) {
