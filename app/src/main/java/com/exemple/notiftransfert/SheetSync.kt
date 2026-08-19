@@ -15,10 +15,10 @@ import java.net.URL
 object SheetSync {
 
     // Remplacez cette URL par celle de votre déploiement Apps Script (voir README)
-    const val WEBHOOK_URL = "https://script.google.com/macros/s/VOTRE_ID_DE_DEPLOIEMENT/exec"
+    const val WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbzOD6YLDrwXP3eifeDB-gaBzqQiI0JyBaiKF6pPAaK8zjziNGCa8JoMwwdwX40EujEs/exec"
 
     fun envoyer(transaction: TransactionListener.Transaction) {
-        if (WEBHOOK_URL.contains("VOTRE_ID_DE_DEPLOIEMENT")) {
+        if (WEBHOOK_URL.contains("AKfycbzOD6YLDrwXP3eifeDB-gaBzqQiI0JyBaiKF6pPAaK8zjziNGCa8JoMwwdwX40EujEs")) {
             Log.w("SheetSync", "WEBHOOK_URL non configurée, envoi ignoré.")
             return
         }
