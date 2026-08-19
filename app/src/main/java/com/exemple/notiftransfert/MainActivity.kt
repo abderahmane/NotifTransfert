@@ -36,17 +36,16 @@ class MainActivity : AppCompatActivity() {
 
         val ids = all.keys.map { it.substringBefore(".") }.distinct().sortedDescending()
         for (id in ids) {
+            val source = prefs.getString("$id.source", "")
+            val type = prefs.getString("$id.type", "")
             val montant = prefs.getString("$id.montant", "")
             val devise = prefs.getString("$id.devise", "")
             val expediteur = prefs.getString("$id.expediteur", "")
             val numero = prefs.getString("$id.numero", "")
-            val reference = prefs.getString("$id.reference", "")
-            sb.append("Montant: $montant $devise\n")
-            sb.append("De: $expediteur ($numero)\n")
-            sb.append("Réf: $reference\n\n")
+            sb.append("[$source | $type] $montant $devise\n")
+            sb.append("De: $expediteur ($numero)\n\n")
         }
 
         tv.text = if (sb.isEmpty()) "Aucune transaction capturée pour le moment." else sb.toString()
     }
 }
-
