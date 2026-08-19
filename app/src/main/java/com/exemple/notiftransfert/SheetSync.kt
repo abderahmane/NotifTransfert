@@ -23,7 +23,7 @@ object SheetSync {
     fun envoyer(context: Context, transaction: TransactionListener.Transaction) {
         val appContext = context.applicationContext
 
-        if (WEBHOOK_URL.contains("AKfycbzOD6YLDrwXP3eifeDB-gaBzqQiI0JyBaiKF6pPAaK8zjziNGCa8JoMwwdwX40EujEs")) {
+        if (WEBHOOK_URL.contains("VOTRE_ID_DE_DEPLOIEMENT")) {
             Log.w("SheetSync", "WEBHOOK_URL non configurée, envoi ignoré.")
             sauvegarderStatut(appContext, "❌ URL non configurée dans SheetSync.kt")
             return
